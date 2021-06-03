@@ -21,6 +21,7 @@
 		F9859F9126682A0F009366DF /* LoginModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859F9026682A0F009366DF /* LoginModel.swift */; };
 		F9859F94266894CC009366DF /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859F92266894CC009366DF /* LoginViewController.swift */; };
 		F9859F95266894CC009366DF /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9859F93266894CC009366DF /* LoginViewController.xib */; };
+		F9859F972668B071009366DF /* PlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859F962668B071009366DF /* PlaceViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		F9859F9026682A0F009366DF /* LoginModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModel.swift; sourceTree = "<group>"; };
 		F9859F92266894CC009366DF /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F9859F93266894CC009366DF /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
+		F9859F962668B071009366DF /* PlaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlaceViewController.swift; path = ../../../../../Documents/PlaceViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 			children = (
 				F9859F92266894CC009366DF /* LoginViewController.swift */,
 				F9859F93266894CC009366DF /* LoginViewController.xib */,
+				F9859F962668B071009366DF /* PlaceViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9859F972668B071009366DF /* PlaceViewController.swift in Sources */,
 				F92DC68326675FCF00A18143 /* ViewController.swift in Sources */,
 				F9859F9126682A0F009366DF /* LoginModel.swift in Sources */,
 				F92DC67F26675FCF00A18143 /* AppDelegate.swift in Sources */,

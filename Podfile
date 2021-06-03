@@ -7,6 +7,7 @@ target 'ENDEAVRide' do
 
   # Pods for ENDEAVRide
   pod 'GoogleMaps', '5.0.0'
+  pod 'GooglePlaces', '5.0.0'
 
   target 'ENDEAVRideTests' do
     inherit! :search_paths
