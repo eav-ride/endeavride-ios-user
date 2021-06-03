@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="ENDEAVRide" customModuleProvider="target">
+            <connections>
+                <outlet property="emailTextfield" destination="QNi-Vg-evx" id="neJ-CJ-Wgx"/>
+                <outlet property="passwordTextfield" destination="adH-p8-IRe" id="S8d-aq-P1c"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="QNi-Vg-evx">
+                    <rect key="frame" x="62" y="118" width="290" height="34"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="adH-p8-IRe">
+                    <rect key="frame" x="62" y="168" width="290" height="34"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3NW-qb-5mQ">
+                    <rect key="frame" x="188" y="298" width="38" height="30"/>
+                    <state key="normal" title="Login"/>
+                    <connections>
+                        <action selector="onLoginButtonClicked:" destination="-1" eventType="touchUpInside" id="wwx-Pg-rv2"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KW6-ex-Fjx">
+                    <rect key="frame" x="178.5" y="360" width="57" height="30"/>
+                    <state key="normal" title="Register"/>
+                    <connections>
+                        <action selector="onRegisterButtonClicked:" destination="-1" eventType="touchUpInside" id="gto-Fs-MrZ"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="KW6-ex-Fjx" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="CdO-HT-JmW"/>
+                <constraint firstItem="3NW-qb-5mQ" firstAttribute="top" secondItem="adH-p8-IRe" secondAttribute="bottom" constant="96" id="DDm-lq-6OO"/>
+                <constraint firstItem="QNi-Vg-evx" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="62" id="L1R-d3-pnY"/>
+                <constraint firstItem="adH-p8-IRe" firstAttribute="leading" secondItem="QNi-Vg-evx" secondAttribute="leading" id="Ttw-k1-cdl"/>
+                <constraint firstItem="QNi-Vg-evx" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="74" id="VVR-3M-8im"/>
+                <constraint firstItem="3NW-qb-5mQ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="VxZ-Nx-96A"/>
+                <constraint firstItem="KW6-ex-Fjx" firstAttribute="top" secondItem="3NW-qb-5mQ" secondAttribute="bottom" constant="32" id="aRt-tu-26U"/>
+                <constraint firstItem="adH-p8-IRe" firstAttribute="top" secondItem="QNi-Vg-evx" secondAttribute="bottom" constant="16" id="fzu-Ui-HIZ"/>
+                <constraint firstItem="adH-p8-IRe" firstAttribute="trailing" secondItem="QNi-Vg-evx" secondAttribute="trailing" id="iIj-EW-LF2"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="QNi-Vg-evx" secondAttribute="trailing" constant="62" id="jb5-ew-vmh"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="109.82142857142857"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
