@@ -6,6 +6,7 @@ target 'ENDEAVRide' do
   use_frameworks!
 
   # Pods for ENDEAVRide
+  pod 'Alamofire', '~> 5.2'
   pod 'GoogleMaps', '5.0.0'
   pod 'GooglePlaces', '5.0.0'
 

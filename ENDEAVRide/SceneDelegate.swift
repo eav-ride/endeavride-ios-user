@@ -20,10 +20,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         
         storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        let loginModel = LoginModel.init()
-        loginModel.delegate = self
-        loginModel.checkUserStatus()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -55,23 +51,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
 
-}
-
-extension SceneDelegate: LoginModelDelegate {
-    func redirectToLoginViewController() {
-        let loginViewController = LoginViewController(nibName: "LoginViewController", bundle: nil)
-        let navigationController = UINavigationController(rootViewController: loginViewController)
-        
-        DispatchQueue.main.async {
-            navigationController.popToRootViewController(animated: true)
-            if (!navigationController.isViewLoaded
-                || navigationController.view.window == nil) {
-                print("to login controller")
-                navigationController.isModalInPresentation = true
-                self.window?.rootViewController?.present(navigationController,
-                                                         animated: true,
-                                                         completion: nil)
-            }
-        }
-    }
 }

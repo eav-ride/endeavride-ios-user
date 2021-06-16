@@ -12,16 +12,16 @@
         <!--Map-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ENDEAVRide" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MapsViewController" customModule="ENDEAVRide" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="XCs-OV-07t">
-                                <rect key="frame" x="32" y="749" width="306" height="54"/>
+                                <rect key="frame" x="10" y="749" width="328" height="54"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fZI-C6-YVd">
-                                        <rect key="frame" x="0.0" y="0.0" width="145" height="54"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="156" height="54"/>
                                         <color key="backgroundColor" name="AccentColor"/>
                                         <state key="normal" title="Clear">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -31,7 +31,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pNc-SV-OoX">
-                                        <rect key="frame" x="161" y="0.0" width="145" height="54"/>
+                                        <rect key="frame" x="172" y="0.0" width="156" height="54"/>
                                         <color key="backgroundColor" name="AccentColor"/>
                                         <state key="normal" title="Request Driver">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -51,7 +51,7 @@
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XCs-OV-07t" secondAttribute="trailing" constant="76" id="Bjz-rV-VNG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="XCs-OV-07t" secondAttribute="bottom" constant="10" id="qVL-iz-IQd"/>
-                            <constraint firstItem="XCs-OV-07t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="32" id="qan-Nr-v7I"/>
+                            <constraint firstItem="XCs-OV-07t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="qan-Nr-v7I"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Map" id="Xgg-Sj-G7V"/>

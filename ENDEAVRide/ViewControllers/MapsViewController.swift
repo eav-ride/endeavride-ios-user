@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  MapsViewController.swift
 //  ENDEAVRide
 //
 //  Created by eavride on 6/1/21.
@@ -9,7 +9,7 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
-class ViewController: UIViewController {
+class MapsViewController: UIViewController {
 
     @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var actionButton: UIButton!
@@ -29,9 +29,19 @@ class ViewController: UIViewController {
 
     // The currently selected place.
     var selectedPlace: GMSPlace?
+    var dest: CLLocationCoordinate2D?
+    
+    private var model: MapsModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let loginModel = LoginModel.init()
+        loginModel.delegate = self
+        loginModel.checkUserStatus()
+        
+        model = MapsModel()
+        model.delegate = self
         
         clearButton.layer.cornerRadius = 10
         actionButton.layer.cornerRadius = 10
@@ -64,6 +74,14 @@ class ViewController: UIViewController {
         listLikelyPlaces()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard mapView != nil, Utils.userId != "" else {
+            return
+        }
+        model.checkIfCurrentRideAvailable()
+    }
+    
     private func addMarker(coordinate: CLLocationCoordinate2D, title: String? = nil, snippet: String? = nil) {
         let marker = GMSMarker(position: coordinate)
             marker.title = title
@@ -72,10 +90,15 @@ class ViewController: UIViewController {
     }
 
     @IBAction func onClickClearButton(_ sender: Any) {
+        dest = nil
         mapView.clear()
     }
     
     @IBAction func onClickActionButton(_ sender: Any) {
+        guard let currentLocation = currentLocation, let dest = dest else {
+            return
+        }
+        model.createRide(origin: currentLocation, dest: dest)
     }
     
     // Populate the array with the list of likely places.
@@ -106,11 +129,12 @@ class ViewController: UIViewController {
 }
 
 // Delegates to handle events for the location manager.
-extension ViewController: CLLocationManagerDelegate {
+extension MapsViewController: CLLocationManagerDelegate {
 
   // Handle incoming location events.
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location: CLLocation = locations.last!
+    currentLocation = location
     print("Location: \(location)")
 
     let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
@@ -166,9 +190,67 @@ extension ViewController: CLLocationManagerDelegate {
   }
 }
 
-extension ViewController: GMSMapViewDelegate {
+extension MapsViewController: GMSMapViewDelegate {
     func mapView(_ mapView: GMSMapView, didLongPressAt coordinate: CLLocationCoordinate2D) {
         mapView.clear()
         addMarker(coordinate: coordinate)
+        dest = coordinate
     }
 }
+
+extension MapsViewController: MapsModelDelegate {
+    
+    func createRideOnComplete(ride: Ride) {
+        // show ride
+        guard let currentLocation = currentLocation, let dest = self.dest ?? Utils.decodeRideDirection(direction: ride.direction) else {
+            return
+        }
+        if self.dest == nil {
+            self.dest = dest
+            DispatchQueue.main.async {
+                self.addMarker(coordinate: dest)
+            }
+        }
+        model.requestDirection(origin: currentLocation, dest: dest)
+    }
+    
+    func updateDirectionPolyline(path: Array<String>) {
+        // update direction path
+        DispatchQueue.main.async {
+            for p in path {
+                let path = GMSMutablePath(fromEncodedPath: p)
+                let polyline = GMSPolyline(path: path)
+                
+                polyline.strokeWidth = 5
+                polyline.strokeColor = .blue
+                polyline.map = self.mapView
+            }
+            self.actionButton.setTitle("Waiting Driver...", for: .normal)
+            self.actionButton.isEnabled = false
+            self.clearButton.setTitle("Cancel Request", for: .normal)
+        }
+    }
+}
+
+extension MapsViewController: LoginModelDelegate {
+    func redirectToLoginViewController() {
+        let loginViewController = LoginViewController(nibName: "LoginViewController", bundle: nil)
+        loginViewController.onCompleteBlock = {
+            self.model.checkIfCurrentRideAvailable()
+        }
+        let navigationController = UINavigationController(rootViewController: loginViewController)
+        
+        DispatchQueue.main.async {
+            navigationController.popToRootViewController(animated: true)
+            if (!navigationController.isViewLoaded
+                    || navigationController.view.window == nil) {
+                print("to login controller")
+                navigationController.isModalInPresentation = true
+                self.present(navigationController,
+                             animated: true,
+                             completion: nil)
+            }
+        }
+    }
+}
+
