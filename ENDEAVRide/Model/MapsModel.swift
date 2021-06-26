@@ -2,28 +2,33 @@
 //  MapsModel.swift
 //  ENDEAVRide
 //
-//  Created by 王凯旋 on 6/6/21.
+//  Created by eavride on 6/6/21.
 //
 
 import Foundation
 import GooglePlaces
 
 protocol MapsModelDelegate: AnyObject {
-    func createRideOnComplete(ride: Ride)
+    func createRideOnComplete(ride: Ride?)
     func updateDirectionPolyline(path: Array<String>)
+    func updateDriverRecord(record: DriveRecord?)
 }
 
 class MapsModel {
     weak var delegate: MapsModelDelegate?
+    private var rid: String?
     
-    func createRide(origin: CLLocation, dest: CLLocationCoordinate2D) {
+    func createRide(origin: CLLocation, destination: CLLocationCoordinate2D) {
         guard let url = URL(string: Utils.baseURL + "r") else {
             return
         }
-        let direction = "\(origin.coordinate.latitude),\(origin.coordinate.longitude);\(dest.latitude),\(dest.longitude)"
-        NetworkUtils.postToServer(url: url, path: nil, parameterDirctionary: ["direction": direction, "uid": Utils.userId]) { data in
+        NetworkUtils.postToServer(url: url, path: nil, parameterDirctionary: [
+                                    "user_location": Utils.encodeLocationString(location: origin.coordinate),
+                                    "destination": Utils.encodeLocationString(location: destination),
+                                    "uid": Utils.userId]) { data in
             do {
                 let ride = try JSONDecoder().decode(Ride.self, from: data)
+                self.rid = ride.rid
                 DispatchQueue.main.async {
                     self.delegate?.createRideOnComplete(ride: ride)
                 }
@@ -42,24 +47,81 @@ class MapsModel {
         NetworkUtils.getFromServer(url: url, header: nil, queryItem: nil) { data in
             do {
                 let ride = try JSONDecoder().decode(Ride.self, from: data)
+                self.rid = ride.rid
                 DispatchQueue.main.async {
                     self.delegate?.createRideOnComplete(ride: ride)
                 }
             } catch {
                 print("#K_request current ride error: ride decode error, \(error)")
+                DispatchQueue.main.async {
+                    self.delegate?.createRideOnComplete(ride: nil)
+                }
             }
         } errorHandler: { error in
             print("#K_request current ride error: \(error)")
+            DispatchQueue.main.async {
+                self.delegate?.createRideOnComplete(ride: nil)
+            }
         }
-
     }
     
-    func requestDirection(origin: CLLocation, dest: CLLocationCoordinate2D) {
+    func refreshRide(delay: UInt32 = 0, showFinish: Bool = false) {
+        guard let url = URL(string: Utils.baseURL + "r") else {
+            return
+        }
+        DispatchQueue.global().async {
+            sleep(delay)
+            NetworkUtils.getFromServer(url: url, header: nil, queryItem: [
+                URLQueryItem(name: "showfinish", value: showFinish.description)
+            ]) { data in
+                do {
+                    let ride = try JSONDecoder().decode(Ride.self, from: data)
+                    DispatchQueue.main.async {
+                        self.delegate?.createRideOnComplete(ride: ride)
+                    }
+                } catch {
+                    print("#K_request current ride error: ride decode error, \(error)")
+                }
+            } errorHandler: { error in
+                print("#K_request current ride error: \(error)")
+            }
+        }
+    }
+    
+    func pollDriveRecord() {
+        guard let rid = rid, let url = URL(string: Utils.baseURL + "dr/\(rid)") else {
+            return
+        }
+        DispatchQueue.global().async {
+            NetworkUtils.getFromServer(url: url, header: nil, queryItem: nil) { data in
+                do {
+                    sleep(3)
+                    let record = try JSONDecoder().decode(DriveRecord.self, from: data)
+                    DispatchQueue.main.async {
+                        self.delegate?.updateDriverRecord(record: record)
+                    }
+                } catch {
+                    print("#K_request driver record error: record decode error, \(error)")
+                    DispatchQueue.main.async {
+                        self.delegate?.updateDriverRecord(record: nil)
+                    }
+                }
+            } errorHandler: { error in
+                print("#K_request driver record error: \(error)")
+                DispatchQueue.main.async {
+                    self.delegate?.updateDriverRecord(record: nil)
+                }
+            }
+        }
+    }
+    
+    //MARK: Google maps direction API
+    func requestDirection(origin: CLLocationCoordinate2D, dest: CLLocationCoordinate2D) {
         guard let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json") else {
             return
         }
         NetworkUtils.getFromServer(url: url, header: nil, queryItem: [
-            URLQueryItem(name: "origin", value: "\(origin.coordinate.latitude),\(origin.coordinate.longitude)"),
+            URLQueryItem(name: "origin", value: "\(origin.latitude),\(origin.longitude)"),
             URLQueryItem(name: "destination", value: "\(dest.latitude),\(dest.longitude)"),
             URLQueryItem(name: "key", value: Utils.mapsKey)
         ]) { data in

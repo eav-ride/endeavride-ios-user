@@ -2,7 +2,7 @@
 //  User.swift
 //  ENDEAVRide
 //
-//  Created by 王凯旋 on 6/6/21.
+//  Created by eavride on 6/6/21.
 //
 
 import Foundation

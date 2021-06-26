@@ -2,7 +2,7 @@
 //  Utils.swift
 //  ENDEAVRide
 //
-//  Created by 王凯旋 on 6/6/21.
+//  Created by eavride on 6/6/21.
 //
 
 import Foundation
@@ -20,14 +20,16 @@ class Utils {
     }
     static var mapsKey = "AIzaSyAxxnazPy8mIAROs-chSCrDknDvzyB3Vho"
     
-    static func decodeRideDirection(direction: String) -> CLLocationCoordinate2D? {
-        let dir = direction.split(separator: ";")
-        if (dir.count != 2) {return nil}
-        let point = dir[1].split(separator: ",")
+    static func decodeLocationString(location: String) -> CLLocationCoordinate2D? {
+        let point = location.split(separator: ",")
         if (point.count != 2) {return nil}
         guard let lat = CLLocationDegrees(point[0]), let lon = CLLocationDegrees(point[1]) else {
             return nil
         }
         return CLLocationCoordinate2D(latitude: lat, longitude: lon)
+    }
+    
+    static func encodeLocationString(location: CLLocationCoordinate2D) -> String {
+        return "\(location.latitude),\(location.longitude)"
     }
 }

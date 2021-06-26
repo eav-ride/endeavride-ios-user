@@ -2,7 +2,7 @@
 //  NetworkUtils.swift
 //  ENDEAVRide
 //
-//  Created by 王凯旋 on 6/6/21.
+//  Created by eavride on 6/6/21.
 //
 
 import Foundation
@@ -17,17 +17,15 @@ class NetworkUtils {
             if let query = queryItem{
                 com.queryItems = query
             }
-//            com.percentEncodedQuery = com.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
             var request = URLRequest(url: com.url!)
             if let id = header {
                 request.addValue(id, forHTTPHeaderField: "targetid")
             }
-            //            if let token = awsResponse{
             request.addValue(Utils.userId, forHTTPHeaderField: "uid")
-            //            }
             let task = session.dataTask(with: request) {(data, response, error) in
                 if let httpResponse = response as? HTTPURLResponse {
                     print("http response status code: \(httpResponse.statusCode)")
+                    print("[Network]: \(httpResponse.url?.absoluteString ?? "url unavailable")")
                     guard (200...299).contains(httpResponse.statusCode) else {
                         print ("server error - get")
                         errorHandler(String(describing: httpResponse.statusCode))
@@ -70,6 +68,7 @@ class NetworkUtils {
         session.dataTask(with: request) { (data, response, error) in
             if let httpResponse = response as? HTTPURLResponse {
                 print("http response status code: \(httpResponse.statusCode)")
+                print("[Network]: \(httpResponse.url?.absoluteString ?? "url unavailable")")
                 guard (200...299).contains(httpResponse.statusCode) else {
                     print ("server error - post")
                     errorHandler(String(describing: httpResponse.statusCode))
