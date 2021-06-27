@@ -17,27 +17,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="XCs-OV-07t">
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="XCs-OV-07t">
                                 <rect key="frame" x="10" y="749" width="328" height="54"/>
                                 <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pNc-SV-OoX">
+                                        <rect key="frame" x="0.0" y="0.0" width="213" height="54"/>
+                                        <color key="backgroundColor" name="AccentColor"/>
+                                        <state key="normal" title="Home Service">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="onClickActionButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Sxb-aq-3Th"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fZI-C6-YVd">
-                                        <rect key="frame" x="0.0" y="0.0" width="156" height="54"/>
+                                        <rect key="frame" x="229" y="0.0" width="99" height="54"/>
                                         <color key="backgroundColor" name="AccentColor"/>
                                         <state key="normal" title="Clear">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
                                             <action selector="onClickClearButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Oy7-QB-eTH"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pNc-SV-OoX">
-                                        <rect key="frame" x="172" y="0.0" width="156" height="54"/>
-                                        <color key="backgroundColor" name="AccentColor"/>
-                                        <state key="normal" title="Request Driver">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="onClickActionButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Sxb-aq-3Th"/>
                                         </connections>
                                     </button>
                                 </subviews>

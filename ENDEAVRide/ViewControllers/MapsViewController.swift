@@ -9,10 +9,14 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 
+enum OrderStatus: Int {
+    case defaultStatus = -1, unassigned = 0, assigning = 1, picking = 2, arrivedAtUserLocation = 3, started = 4, finished = 5, cancelled = 6
+}
+enum OrderType: Int {
+    case ride = 0, home = 1
+}
+
 class MapsViewController: UIViewController {
-    enum OrderStatus: Int {
-        case defaultStatus = -1, unassigned = 0, assigning = 1, picking = 2, arrivedAtUserLocation = 3, started = 4, finished = 5, cancelled = 6
-    }
 
     @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var actionButton: UIButton!
@@ -41,7 +45,7 @@ class MapsViewController: UIViewController {
     private var placesClient: GMSPlacesClient!
     private var preciseLocationZoomLevel: Float = 15.0
     private var approximateLocationZoomLevel: Float = 10.0
-    
+    private var type: OrderType = .ride
     private var status: OrderStatus = .defaultStatus {
         didSet {
             reloadData()
@@ -115,14 +119,15 @@ class MapsViewController: UIViewController {
             actionButton.isEnabled = false
             clearButton.setTitle("Cancel", for: .normal)
             clearButton.isEnabled = true
+            clearButton.isHidden = false
             
             model.refreshRide(delay: 3)
         case .picking:
             print("#K_ driver picking user")
             actionButton.setTitle("Ride received, waiting for pick up...", for: .normal)
             actionButton.isEnabled = false
-            clearButton.setTitle("Cancel", for: .normal)
-            clearButton.isEnabled = false
+            clearButton.isHidden = true
+            buttonContainerView.removeArrangedSubview(clearButton)
             
             if (!isPollingDriveRecord) {
                 isPollingDriveRecord = true
@@ -134,17 +139,17 @@ class MapsViewController: UIViewController {
             print("#K_ driver arrived at user's place")
             actionButton.setTitle("Driver arrived!", for: .normal)
             actionButton.isEnabled = false
-            clearButton.setTitle("Cancel", for: .normal)
-            clearButton.isEnabled = false
+            clearButton.isHidden = true
+            buttonContainerView.removeArrangedSubview(clearButton)
             
             isPollingDriveRecord = false
             model.refreshRide(delay: 5)
         case .started:
             print("#K_ user abord")
-            actionButton.setTitle("Sit tight, heading to your destination!", for: .normal)
+            actionButton.setTitle(type == .ride ? "Sit tight, heading to your destination!" : "Driver is on the way!", for: .normal)
             actionButton.isEnabled = false
-            clearButton.setTitle("Cancel", for: .normal)
-            clearButton.isEnabled = false
+            clearButton.isHidden = true
+            buttonContainerView.removeArrangedSubview(clearButton)
             
             if (!isPollingDriveRecord) {
                 isPollingDriveRecord = true
@@ -153,19 +158,26 @@ class MapsViewController: UIViewController {
                 model.pollDriveRecord()
             }
             model.refreshRide(delay: 3, showFinish: true)
-        case .finished:
-            print("#K_ ride finished!")
-            defaultStatusActions()
+        case .finished, .cancelled:
+            print("#K_ ride finished or canceled!")
+            mapView.clear()
+            destination = nil
+            userLocation = nil
+            status = .defaultStatus
         default:
             defaultStatusActions()
         }
     }
     
     private func defaultStatusActions() {
-        actionButton.setTitle("Request Driver", for: .normal)
+        actionButton.setTitle(destination == nil ? "Home Service" : "Ride Service", for: .normal)
         actionButton.isEnabled = true
         clearButton.setTitle("Clear", for: .normal)
         clearButton.isEnabled = true
+        clearButton.isHidden = false
+        if buttonContainerView.arrangedSubviews.count == 1 {
+            buttonContainerView.addArrangedSubview(clearButton)
+        }
         
         isPollingDriveRecord = false
     }
@@ -181,20 +193,33 @@ class MapsViewController: UIViewController {
         switch status {
         case .unassigned, .assigning:
             print("post cancel ride request")
+            let alert = UIAlertController(title: "Cancel Request", message: "Are you sure to cancel current request?", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Yes, cancel it", style: .destructive, handler: { action in
+                self.model.cancelRide()
+            }))
+            alert.addAction(UIAlertAction(title: "No", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         case .defaultStatus:
             destination = nil
             userLocation = nil
             mapView.clear()
+            reloadData()
         default:
             print("Clear button action error, no actions available for status: \(status)")
         }
     }
     
     @IBAction func onClickActionButton(_ sender: Any) {
-        guard status == .defaultStatus, let currentLocation = currentLocation, let dest = destination else {
+        guard status == .defaultStatus, let currentLocation = currentLocation else {
             return
         }
-        model.createRide(origin: currentLocation, destination: dest)
+        type = destination == nil ? .home : .ride
+        guard type == .home || (type == .ride && destination != nil) else {
+            return
+        }
+        let origin = type == .home ? nil : currentLocation
+        let dest = type == .home ? currentLocation.coordinate : destination
+        model.createRide(type: type.rawValue, origin: origin, destination: dest!)
     }
     
     // Populate the array with the list of likely places.
@@ -292,6 +317,7 @@ extension MapsViewController: GMSMapViewDelegate {
         mapView.clear()
         addMarker(coordinate: coordinate)
         destination = coordinate
+        reloadData()
     }
 }
 
@@ -312,10 +338,14 @@ extension MapsViewController: MapsModelDelegate {
             status = .defaultStatus
             return
         }
-        guard let _ = currentLocation, let dest = self.destination ?? Utils.decodeLocationString(location: ride.destination), let userLocation = Utils.decodeLocationString(location: ride.user_location) else {
+        type = OrderType(rawValue: ride.type ) ?? .ride
+        guard let _ = currentLocation, let dest = self.destination ?? Utils.decodeLocationString(location: ride.destination) else {
             return
         }
-        status = OrderStatus(rawValue: Int(ride.status) ?? -1) ?? .defaultStatus
+        status = OrderStatus(rawValue: ride.status ) ?? .defaultStatus
+        guard ride.status < OrderStatus.finished.rawValue, type == .ride, let userLocationString = ride.user_location, let userLocation = Utils.decodeLocationString(location: userLocationString) else {
+            return
+        }
         if self.destination == nil || self.userLocation == nil {
             self.destination = dest
             self.userLocation = userLocation
@@ -337,9 +367,6 @@ extension MapsViewController: MapsModelDelegate {
                 polyline.strokeColor = .blue
                 polyline.map = self.mapView
             }
-//            self.actionButton.setTitle("Waiting Driver...", for: .normal)
-//            self.actionButton.isEnabled = false
-//            self.clearButton.setTitle("Cancel Request", for: .normal)
         }
     }
 }

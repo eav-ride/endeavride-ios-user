@@ -18,14 +18,18 @@ class MapsModel {
     weak var delegate: MapsModelDelegate?
     private var rid: String?
     
-    func createRide(origin: CLLocation, destination: CLLocationCoordinate2D) {
+    func createRide(type: Int, origin: CLLocation?, destination: CLLocationCoordinate2D) {
         guard let url = URL(string: Utils.baseURL + "r") else {
             return
         }
-        NetworkUtils.postToServer(url: url, path: nil, parameterDirctionary: [
-                                    "user_location": Utils.encodeLocationString(location: origin.coordinate),
-                                    "destination": Utils.encodeLocationString(location: destination),
-                                    "uid": Utils.userId]) { data in
+        var params: [String: Any] = [
+            "destination": Utils.encodeLocationString(location: destination),
+            "type": type,
+            "uid": Utils.userId]
+        if let origin = origin {
+            params["user_location"] = Utils.encodeLocationString(location: origin.coordinate)
+        }
+        NetworkUtils.postToServer(url: url, path: nil, parameterDirctionary: params) { data in
             do {
                 let ride = try JSONDecoder().decode(Ride.self, from: data)
                 self.rid = ride.rid
@@ -37,6 +41,27 @@ class MapsModel {
             }
         } errorHandler: { error in
             print("#K_create ride error: \(error)")
+        }
+    }
+    
+    func cancelRide() {
+        guard let rid = rid, let url = URL(string: Utils.baseURL + "r/\(rid)") else {
+            return
+        }
+        let params: [String: Any] = [
+            "status": OrderStatus.cancelled.rawValue]
+        NetworkUtils.postToServer(url: url, path: nil, parameterDirctionary: params) { data in
+            do {
+                let ride = try JSONDecoder().decode(Ride.self, from: data)
+                self.rid = nil
+                DispatchQueue.main.async {
+                    self.delegate?.createRideOnComplete(ride: ride)
+                }
+            } catch {
+                print("#K_cancel ride error: ride decode error, \(error)")
+            }
+        } errorHandler: { error in
+            print("#K_cancel ride error: \(error)")
         }
     }
     
@@ -66,7 +91,7 @@ class MapsModel {
     }
     
     func refreshRide(delay: UInt32 = 0, showFinish: Bool = false) {
-        guard let url = URL(string: Utils.baseURL + "r") else {
+        guard let rid = rid, let url = URL(string: Utils.baseURL + "r/\(rid)") else {
             return
         }
         DispatchQueue.global().async {
