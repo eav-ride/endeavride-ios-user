@@ -161,9 +161,18 @@ class MapsViewController: UIViewController {
         case .finished, .cancelled:
             print("#K_ ride finished or canceled!")
             mapView.clear()
+            if status == .finished {
+                actionButton.setTitle(type == .ride ? "You've arrived!!" : "Driver has arrived!!", for: .normal)
+            } else {
+                actionButton.setTitle("Service cancelled!", for: .normal)
+            }
+            actionButton.isEnabled = true
+            isPollingDriveRecord = false
             destination = nil
             userLocation = nil
-            status = .defaultStatus
+            driverLocation = nil
+            driverMarker?.map = nil
+            driverMarker = nil
         default:
             defaultStatusActions()
         }
@@ -204,12 +213,20 @@ class MapsViewController: UIViewController {
             userLocation = nil
             mapView.clear()
             reloadData()
+        case .cancelled, .finished:
+            mapView.clear()
+            status = .defaultStatus
         default:
             print("Clear button action error, no actions available for status: \(status)")
         }
     }
     
     @IBAction func onClickActionButton(_ sender: Any) {
+        if status == .cancelled || status == .finished {
+            mapView.clear()
+            status = .defaultStatus
+            return
+        }
         guard status == .defaultStatus, let currentLocation = currentLocation else {
             return
         }
@@ -323,11 +340,14 @@ extension MapsViewController: GMSMapViewDelegate {
 
 extension MapsViewController: MapsModelDelegate {
     func updateDriverRecord(record: DriveRecord?) {
-        if let record = record {
-            driverLocation = Utils.decodeLocationString(location: record.driver_location)
-        }
-        
         if isPollingDriveRecord {
+            if let record = record {
+                driverLocation = Utils.decodeLocationString(location: record.driver_location)
+            } else {
+                driverLocation = nil
+                driverMarker?.map = nil
+                driverMarker = nil
+            }
             model.pollDriveRecord()
         }
     }
