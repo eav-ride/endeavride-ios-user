@@ -18,7 +18,7 @@ class Utils {
             }
         }
     }
-    static var mapsKey = "AIzaSyAxxnazPy8mIAROs-chSCrDknDvzyB3Vho"
+    static var mapsKey = "AIzaSyBQLhQPNU5UFQczahI4ZHX4CReuH1D5o8U"
     
     static func decodeLocationString(location: String) -> CLLocationCoordinate2D? {
         let point = location.split(separator: ",")

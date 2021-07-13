@@ -21,6 +21,7 @@ class MapsViewController: UIViewController {
     @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var actionButton: UIButton!
     @IBOutlet weak var buttonContainerView: UIStackView!
+    @IBOutlet weak var searchButton: UIButton!
     
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
@@ -75,6 +76,7 @@ class MapsViewController: UIViewController {
         
         clearButton.layer.cornerRadius = 10
         actionButton.layer.cornerRadius = 10
+        searchButton.layer.cornerRadius = 27
         
         // Initialize the location manager.
         locationManager = CLLocationManager()
@@ -84,6 +86,7 @@ class MapsViewController: UIViewController {
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         
+        GMSPlacesClient.provideAPIKey(Utils.mapsKey)
         placesClient = GMSPlacesClient.shared()
         
         let defaultLocation = CLLocation(latitude: -33.869405, longitude: 151.199)
@@ -100,6 +103,7 @@ class MapsViewController: UIViewController {
         mapView.delegate = self
         self.view.addSubview(mapView)
         self.view.bringSubviewToFront(buttonContainerView)
+        self.view.bringSubviewToFront(searchButton)
         
         listLikelyPlaces()
     }
@@ -112,6 +116,11 @@ class MapsViewController: UIViewController {
         model.checkIfCurrentRideAvailable()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        locationManager.stopUpdatingLocation()
+    }
+    
     private func reloadData() {
         switch status {
         case .unassigned, .assigning:
@@ -120,6 +129,7 @@ class MapsViewController: UIViewController {
             clearButton.setTitle("Cancel", for: .normal)
             clearButton.isEnabled = true
             clearButton.isHidden = false
+            searchButton.isHidden = true
             
             model.refreshRide(delay: 3)
         case .picking:
@@ -127,6 +137,7 @@ class MapsViewController: UIViewController {
             actionButton.setTitle("Ride received, waiting for pick up...", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
+            searchButton.isHidden = true
             buttonContainerView.removeArrangedSubview(clearButton)
             
             if (!isPollingDriveRecord) {
@@ -140,6 +151,7 @@ class MapsViewController: UIViewController {
             actionButton.setTitle("Driver arrived!", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
+            searchButton.isHidden = true
             buttonContainerView.removeArrangedSubview(clearButton)
             
             isPollingDriveRecord = false
@@ -149,6 +161,7 @@ class MapsViewController: UIViewController {
             actionButton.setTitle(type == .ride ? "Sit tight, heading to your destination!" : "Driver is on the way!", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
+            searchButton.isHidden = true
             buttonContainerView.removeArrangedSubview(clearButton)
             
             if (!isPollingDriveRecord) {
@@ -184,6 +197,7 @@ class MapsViewController: UIViewController {
         clearButton.setTitle("Clear", for: .normal)
         clearButton.isEnabled = true
         clearButton.isHidden = false
+        searchButton.isHidden = false
         if buttonContainerView.arrangedSubviews.count == 1 {
             buttonContainerView.addArrangedSubview(clearButton)
         }
@@ -196,6 +210,7 @@ class MapsViewController: UIViewController {
         marker.title = title
         marker.snippet = snippet
         marker.map = mapView
+        mapView.animate(toLocation: coordinate)
     }
 
     @IBAction func onClickClearButton(_ sender: Any) {
@@ -237,6 +252,25 @@ class MapsViewController: UIViewController {
         let origin = type == .home ? nil : currentLocation
         let dest = type == .home ? currentLocation.coordinate : destination
         model.createRide(type: type.rawValue, origin: origin, destination: dest!)
+    }
+    
+    @IBAction func onClickSearchButton(_ sender: Any) {
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        
+        // Specify the place data types to return.
+        let fields: GMSPlaceField = GMSPlaceField(rawValue: UInt(GMSPlaceField.name.rawValue) |
+                                                    UInt(GMSPlaceField.placeID.rawValue) |
+                                                    UInt(GMSPlaceField.coordinate.rawValue))
+        autocompleteController.placeFields = fields
+        
+        // Specify a filter.
+        let filter = GMSAutocompleteFilter()
+        filter.type = .address
+        autocompleteController.autocompleteFilter = filter
+        
+        // Display the autocomplete view controller.
+        present(autocompleteController, animated: true, completion: nil)
     }
     
     // Populate the array with the list of likely places.
@@ -413,3 +447,40 @@ extension MapsViewController: LoginModelDelegate {
     }
 }
 
+extension MapsViewController: GMSAutocompleteViewControllerDelegate {
+
+  // Handle the user's selection.
+  func viewController(_ viewController: GMSAutocompleteViewController, didAutocompleteWith place: GMSPlace) {
+    print("Place name: \(place.name)")
+    print("Place ID: \(String(describing: place.placeID))")
+    print("Place coordinate: \(place.coordinate)")
+    
+    let coordinate = place.coordinate
+    mapView.clear()
+    addMarker(coordinate: coordinate)
+    destination = coordinate
+    reloadData()
+    
+    dismiss(animated: true, completion: nil)
+  }
+
+  func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
+    // TODO: handle the error.
+    print("Error: ", error.localizedDescription)
+  }
+
+  // User canceled the operation.
+  func wasCancelled(_ viewController: GMSAutocompleteViewController) {
+    dismiss(animated: true, completion: nil)
+  }
+
+  // Turn the network activity indicator on and off again.
+  func didRequestAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+  }
+
+  func didUpdateAutocompletePredictions(_ viewController: GMSAutocompleteViewController) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+  }
+
+}

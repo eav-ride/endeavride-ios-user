@@ -45,20 +45,39 @@
                                     <constraint firstAttribute="height" constant="54" id="IPs-bg-vIB"/>
                                 </constraints>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i4v-0s-I3m">
+                                <rect key="frame" x="18" y="62" width="54" height="54"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="54" id="4WH-H7-nrj"/>
+                                    <constraint firstAttribute="height" constant="54" id="KcF-HN-5Yg"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" image="magnifyingglass" catalog="system">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="26"/>
+                                </state>
+                                <connections>
+                                    <action selector="onClickSearchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KEI-XB-Xk0"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XCs-OV-07t" secondAttribute="trailing" constant="76" id="Bjz-rV-VNG"/>
+                            <constraint firstItem="i4v-0s-I3m" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="18" id="DVN-e0-naM"/>
+                            <constraint firstItem="i4v-0s-I3m" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="18" id="NpA-vi-zgG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="XCs-OV-07t" secondAttribute="bottom" constant="10" id="qVL-iz-IQd"/>
                             <constraint firstItem="XCs-OV-07t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="qan-Nr-v7I"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" id="Xgg-Sj-G7V"/>
+                    <tabBarItem key="tabBarItem" title="Map" selectedImage="map" catalog="system" id="Xgg-Sj-G7V"/>
                     <connections>
                         <outlet property="actionButton" destination="pNc-SV-OoX" id="mZa-7W-4Ja"/>
                         <outlet property="buttonContainerView" destination="XCs-OV-07t" id="IJo-Qc-m8i"/>
                         <outlet property="clearButton" destination="fZI-C6-YVd" id="ZPK-G1-zKZ"/>
+                        <outlet property="searchButton" destination="i4v-0s-I3m" id="bnr-ea-W4U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -85,6 +104,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="magnifyingglass" catalog="system" width="128" height="115"/>
+        <image name="map" catalog="system" width="128" height="110"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
