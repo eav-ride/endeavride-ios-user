@@ -37,10 +37,10 @@ class MapsModel {
                     self.delegate?.createRideOnComplete(ride: ride)
                 }
             } catch {
-                print("#K_create ride error: ride decode error, \(error)")
+                print("create ride error: ride decode error, \(error)")
             }
         } errorHandler: { error in
-            print("#K_create ride error: \(error)")
+            print("create ride error: \(error)")
         }
     }
     
@@ -58,10 +58,10 @@ class MapsModel {
                     self.delegate?.createRideOnComplete(ride: ride)
                 }
             } catch {
-                print("#K_cancel ride error: ride decode error, \(error)")
+                print("cancel ride error: ride decode error, \(error)")
             }
         } errorHandler: { error in
-            print("#K_cancel ride error: \(error)")
+            print("cancel ride error: \(error)")
         }
     }
     
@@ -77,13 +77,13 @@ class MapsModel {
                     self.delegate?.createRideOnComplete(ride: ride)
                 }
             } catch {
-                print("#K_request current ride error: ride decode error, \(error)")
+                print("request current ride error: ride decode error, \(error)")
                 DispatchQueue.main.async {
                     self.delegate?.createRideOnComplete(ride: nil)
                 }
             }
         } errorHandler: { error in
-            print("#K_request current ride error: \(error)")
+            print("request current ride error: \(error)")
             DispatchQueue.main.async {
                 self.delegate?.createRideOnComplete(ride: nil)
             }
@@ -105,10 +105,10 @@ class MapsModel {
                         self.delegate?.createRideOnComplete(ride: ride)
                     }
                 } catch {
-                    print("#K_request current ride error: ride decode error, \(error)")
+                    print("request current ride error: ride decode error, \(error)")
                 }
             } errorHandler: { error in
-                print("#K_request current ride error: \(error)")
+                print("request current ride error: \(error)")
             }
         }
     }
@@ -126,13 +126,13 @@ class MapsModel {
                         self.delegate?.updateDriverRecord(record: record)
                     }
                 } catch {
-                    print("#K_request driver record error: record decode error, \(error)")
+                    print("request driver record error: record decode error, \(error)")
                     DispatchQueue.main.async {
                         self.delegate?.updateDriverRecord(record: nil)
                     }
                 }
             } errorHandler: { error in
-                print("#K_request driver record error: \(error)")
+                print("request driver record error: \(error)")
                 DispatchQueue.main.async {
                     self.delegate?.updateDriverRecord(record: nil)
                 }
@@ -167,7 +167,7 @@ class MapsModel {
             }
             self.delegate?.updateDirectionPolyline(path: path)
         } errorHandler: { error in
-            print("#K_request ride direction error: \(error)")
+            print("request ride direction error: \(error)")
         }
 
     }

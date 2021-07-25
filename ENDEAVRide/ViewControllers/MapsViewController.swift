@@ -22,6 +22,7 @@ class MapsViewController: UIViewController {
     @IBOutlet weak var actionButton: UIButton!
     @IBOutlet weak var buttonContainerView: UIStackView!
     @IBOutlet weak var searchButton: UIButton!
+    @IBOutlet weak var logoutButton: UIButton!
     
     private var longPressGestureRecognizer: UILongPressGestureRecognizer!
     
@@ -39,6 +40,7 @@ class MapsViewController: UIViewController {
                     marker.map = mapView
                     driverMarker = marker
                 }
+                mapView.animate(toLocation: driverLocation)
             }
         }
     }
@@ -63,11 +65,13 @@ class MapsViewController: UIViewController {
     private var isPollingDriveRecord = false
     
     private var model: MapsModel!
+    private var loginModel: LoginModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBarController?.tabBar.isHidden = true
         
-        let loginModel = LoginModel.init()
+        loginModel = LoginModel.init()
         loginModel.delegate = self
         loginModel.checkUserStatus()
         
@@ -104,6 +108,7 @@ class MapsViewController: UIViewController {
         self.view.addSubview(mapView)
         self.view.bringSubviewToFront(buttonContainerView)
         self.view.bringSubviewToFront(searchButton)
+        self.view.bringSubviewToFront(logoutButton)
         
         listLikelyPlaces()
     }
@@ -122,6 +127,7 @@ class MapsViewController: UIViewController {
     }
     
     private func reloadData() {
+        print("Reloading data with status \(status.rawValue)")
         switch status {
         case .unassigned, .assigning:
             actionButton.setTitle("Waiting available drivers...", for: .normal)
@@ -133,7 +139,6 @@ class MapsViewController: UIViewController {
             
             model.refreshRide(delay: 3)
         case .picking:
-            print("#K_ driver picking user")
             actionButton.setTitle("Ride received, waiting for pick up...", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
@@ -142,22 +147,20 @@ class MapsViewController: UIViewController {
             
             if (!isPollingDriveRecord) {
                 isPollingDriveRecord = true
-                print("#K_ start polling driver record")
+                print("start polling driver record")
                 model.pollDriveRecord()
             }
             model.refreshRide(delay: 5)
         case.arrivedAtUserLocation:
-            print("#K_ driver arrived at user's place")
             actionButton.setTitle("Driver arrived!", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
             searchButton.isHidden = true
             buttonContainerView.removeArrangedSubview(clearButton)
             
-            isPollingDriveRecord = false
+            isPollingDriveRecord = true
             model.refreshRide(delay: 5)
         case .started:
-            print("#K_ user abord")
             actionButton.setTitle(type == .ride ? "Sit tight, heading to your destination!" : "Driver is on the way!", for: .normal)
             actionButton.isEnabled = false
             clearButton.isHidden = true
@@ -166,18 +169,17 @@ class MapsViewController: UIViewController {
             
             if (!isPollingDriveRecord) {
                 isPollingDriveRecord = true
-                print("#K_ start polling driver record")
+                print("start polling driver record")
                 locationManager.startUpdatingLocation()
                 model.pollDriveRecord()
             }
             model.refreshRide(delay: 3, showFinish: true)
         case .finished, .cancelled:
-            print("#K_ ride finished or canceled!")
             mapView.clear()
             if status == .finished {
-                actionButton.setTitle(type == .ride ? "You've arrived!!" : "Driver has arrived!!", for: .normal)
+                Toast.show(message: type == .ride ? "You've arrived!!" : "Driver has arrived!!", controller: self)
             } else {
-                actionButton.setTitle("Service cancelled!", for: .normal)
+                Toast.show(message: "Service cancelled!", controller: self)
             }
             actionButton.isEnabled = true
             isPollingDriveRecord = false
@@ -186,6 +188,7 @@ class MapsViewController: UIViewController {
             driverLocation = nil
             driverMarker?.map = nil
             driverMarker = nil
+            status = .defaultStatus
         default:
             defaultStatusActions()
         }
@@ -273,6 +276,10 @@ class MapsViewController: UIViewController {
         present(autocompleteController, animated: true, completion: nil)
     }
     
+    @IBAction func onClickLogoutButton(_ sender: Any) {
+        loginModel.logout()
+    }
+    
     // Populate the array with the list of likely places.
     private func listLikelyPlaces() {
       // Clean up from previous sessions.
@@ -306,8 +313,6 @@ extension MapsViewController: CLLocationManagerDelegate {
   // Handle incoming location events.
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
     let location: CLLocation = locations.last!
-    currentLocation = location
-    print("Location: \(location)")
 
     let zoomLevel = locationManager.accuracyAuthorization == .fullAccuracy ? preciseLocationZoomLevel : approximateLocationZoomLevel
     let camera = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude,
@@ -317,9 +322,11 @@ extension MapsViewController: CLLocationManagerDelegate {
     if mapView.isHidden {
       mapView.isHidden = false
       mapView.camera = camera
-    } else {
+    } else if (currentLocation == nil) {
       mapView.animate(to: camera)
     }
+    currentLocation = location
+    print("Location: \(location)")
 
     listLikelyPlaces()
   }

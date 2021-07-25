@@ -27,6 +27,7 @@
 		F9859F9F266D7D70009366DF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859F9E266D7D70009366DF /* User.swift */; };
 		F9859FA1266D8200009366DF /* MapsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859FA0266D8200009366DF /* MapsModel.swift */; };
 		F9859FA3266D8776009366DF /* Ride.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9859FA2266D8776009366DF /* Ride.swift */; };
+		F9A9E8FC26A25FE3004B2861 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A9E8FB26A25FE3004B2861 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		F9859F9E266D7D70009366DF /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		F9859FA0266D8200009366DF /* MapsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapsModel.swift; sourceTree = "<group>"; };
 		F9859FA2266D8776009366DF /* Ride.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ride.swift; sourceTree = "<group>"; };
+		F9A9E8FB26A25FE3004B2861 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,6 +197,7 @@
 				F9859F93266894CC009366DF /* LoginViewController.xib */,
 				F92DC68226675FCF00A18143 /* MapsViewController.swift */,
 				F9859F962668B071009366DF /* PlaceViewController.swift */,
+				F9A9E8FB26A25FE3004B2861 /* SettingsViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -513,6 +516,7 @@
 				F9859F9A266D7859009366DF /* NetworkUtils.swift in Sources */,
 				F92DC68126675FCF00A18143 /* SceneDelegate.swift in Sources */,
 				F9859F9C266D78A5009366DF /* Utils.swift in Sources */,
+				F9A9E8FC26A25FE3004B2861 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,6 +694,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3MG93DN8UV;
 				INFOPLIST_FILE = ENDEAVRide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -709,6 +714,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3MG93DN8UV;
 				INFOPLIST_FILE = ENDEAVRide/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

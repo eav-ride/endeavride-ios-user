@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -61,22 +62,47 @@
                                     <action selector="onClickSearchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KEI-XB-Xk0"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4fE-x1-yiy">
+                                <rect key="frame" x="330" y="62" width="66" height="54"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="66" id="xJw-fK-nqT"/>
+                                    <constraint firstAttribute="height" constant="54" id="ywa-EU-aLe"/>
+                                </constraints>
+                                <state key="normal" title="Logout">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="onClickLogoutButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0qp-kP-pGG"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="XCs-OV-07t" secondAttribute="trailing" constant="76" id="Bjz-rV-VNG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4fE-x1-yiy" secondAttribute="trailing" constant="18" id="CRq-sY-mcy"/>
                             <constraint firstItem="i4v-0s-I3m" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="18" id="DVN-e0-naM"/>
                             <constraint firstItem="i4v-0s-I3m" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="18" id="NpA-vi-zgG"/>
+                            <constraint firstItem="4fE-x1-yiy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="18" id="m63-0s-jlk"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="XCs-OV-07t" secondAttribute="bottom" constant="10" id="qVL-iz-IQd"/>
                             <constraint firstItem="XCs-OV-07t" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="qan-Nr-v7I"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Map" selectedImage="map" catalog="system" id="Xgg-Sj-G7V"/>
+                    <tabBarItem key="tabBarItem" title="Map" id="Xgg-Sj-G7V">
+                        <imageReference key="image" image="map" catalog="system" symbolScale="default"/>
+                        <imageReference key="selectedImage" image="map.fill" catalog="system" symbolScale="default"/>
+                    </tabBarItem>
                     <connections>
                         <outlet property="actionButton" destination="pNc-SV-OoX" id="mZa-7W-4Ja"/>
                         <outlet property="buttonContainerView" destination="XCs-OV-07t" id="IJo-Qc-m8i"/>
                         <outlet property="clearButton" destination="fZI-C6-YVd" id="ZPK-G1-zKZ"/>
+                        <outlet property="logoutButton" destination="4fE-x1-yiy" id="klN-hL-VeZ"/>
                         <outlet property="searchButton" destination="i4v-0s-I3m" id="bnr-ea-W4U"/>
                     </connections>
                 </viewController>
@@ -84,11 +110,40 @@
             </objects>
             <point key="canvasLocation" x="1005.7971014492755" y="93.75"/>
         </scene>
+        <!--Setting-->
+        <scene sceneID="BFD-R6-7GX">
+            <objects>
+                <viewController id="ill-LM-Opz" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ieA-5z-T47">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to the Setting page" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IB0-w5-0NX">
+                                <rect key="frame" x="96.5" y="437.5" width="221" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wcb-Nm-QxX"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="IB0-w5-0NX" firstAttribute="centerY" secondItem="ieA-5z-T47" secondAttribute="centerY" id="0qC-tf-EV9"/>
+                            <constraint firstItem="IB0-w5-0NX" firstAttribute="centerX" secondItem="ieA-5z-T47" secondAttribute="centerX" id="YR3-7j-hwj"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Setting" image="gearshape" catalog="system" selectedImage="gearshape.fill" id="EuZ-ge-Ps0"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3K4-Ka-EIQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1006" y="783"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="gz7-EP-RlC">
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="ZzP-kR-E93" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1IB-0h-qoM">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -96,6 +151,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="cPc-Gn-MrU"/>
+                        <segue destination="ill-LM-Opz" kind="relationship" relationship="viewControllers" id="5uV-PU-S8K"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V1P-eP-fwb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -104,8 +160,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="gearshape" catalog="system" width="128" height="121"/>
+        <image name="gearshape.fill" catalog="system" width="128" height="121"/>
         <image name="magnifyingglass" catalog="system" width="128" height="115"/>
         <image name="map" catalog="system" width="128" height="110"/>
+        <image name="map.fill" catalog="system" width="128" height="110"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -25,7 +25,7 @@ class LoginModel {
         }
     }
     
-    func loginUser(email: String, password: String) {
+    func loginUser(email: String, password: String, errorHandler: ((String)->())?) {
         guard let url = URL(string: Utils.baseURL + "user") else {
             return
         }
@@ -39,14 +39,17 @@ class LoginModel {
                 UserDefaults.standard.setValue(email, forKey: "userEmail")
                 UserDefaults.standard.setValue(password, forKey: "userHash")
             } catch {
-                print("#K_login error: user decode error")
+                print("login error: user decode error")
             }
         } errorHandler: { error in
-            print("#K_login error: \(error)")
+            print("login error: \(error)")
+            if let errorHandler = errorHandler {
+                errorHandler(error)
+            }
         }
     }
     
-    func registerUser(email: String, password: String) {
+    func registerUser(email: String, password: String, errorHandler: ((String)->())?) {
         guard let url = URL(string: Utils.baseURL + "user/register") else {
             return
         }
@@ -60,10 +63,19 @@ class LoginModel {
                 UserDefaults.standard.setValue(email, forKey: "userEmail")
                 UserDefaults.standard.setValue(password, forKey: "userHash")
             } catch {
-                print("#K_register error: user decode error")
+                print("register error: user decode error")
             }
         } errorHandler: { error in
-            print("#K_register error: \(error)")
+            print("register error: \(error)")
+            if let errorHandler = errorHandler {
+                errorHandler(error)
+            }
         }
+    }
+    
+    func logout() {
+        Utils.user = nil
+        Utils.userId = ""
+        delegate?.redirectToLoginViewController()
     }
 }

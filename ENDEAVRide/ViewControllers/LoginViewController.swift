@@ -20,7 +20,10 @@ class LoginViewController: UIViewController {
 
         loginModel = LoginModel()
         loginModel.delegate = self
-        // Do any additional setup after loading the view.
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+
+       view.addGestureRecognizer(tap)
         
         if let username = UserDefaults.standard.string(forKey: "userEmail") {
             emailTextfield.text = username
@@ -34,25 +37,23 @@ class LoginViewController: UIViewController {
         guard let email = emailTextfield.text, let password = passwordTextfield.text else {
             return
         }
-        loginModel.loginUser(email: email, password: password)
+        loginModel.loginUser(email: email, password: password) { error in
+            Toast.show(message: "Login error: \(error)", controller: self)
+        }
     }
     
     @IBAction func onRegisterButtonClicked(_ sender: Any) {
         guard let email = emailTextfield.text, let password = passwordTextfield.text else {
             return
         }
-        loginModel.registerUser(email: email, password: password)
+        loginModel.registerUser(email: email, password: password) { error in
+            Toast.show(message: "Register error: \(error)", controller: self)
+        }
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
-    */
-
 }
 
 extension LoginViewController: LoginModelDelegate {
