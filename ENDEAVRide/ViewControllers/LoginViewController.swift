@@ -38,7 +38,13 @@ class LoginViewController: UIViewController {
             return
         }
         loginModel.loginUser(email: email, password: password) { error in
-            Toast.show(message: "Login error: \(error)", controller: self)
+            DispatchQueue.main.async {
+                #if DEBUG
+                Toast.show(message: "Login error: \(error)", controller: self)
+                #else
+                Toast.show(message: "Login error\nPlease check your input and try again later!", controller: self)
+                #endif
+            }
         }
     }
     
@@ -47,7 +53,13 @@ class LoginViewController: UIViewController {
             return
         }
         loginModel.registerUser(email: email, password: password) { error in
-            Toast.show(message: "Register error: \(error)", controller: self)
+            DispatchQueue.main.async {
+                #if DEBUG
+                Toast.show(message: "Register error: \(error)", controller: self)
+                #else
+                Toast.show(message: "Register error\nPlease try again later!", controller: self)
+                #endif
+            }
         }
     }
     
